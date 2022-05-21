@@ -1,0 +1,5 @@
+﻿  main.cpp
+C:\A Programming\C++\openGL\better mario bros\super mario bros\super mario bros\MouseHandleler.h(3,1): warning C4005: 'ARRAY_LEN': macro redefinition
+C:\A Programming\C++\openGL\better mario bros\super mario bros\super mario bros\KeysHandleler.h(3): message : see previous definition of 'ARRAY_LEN'
+C:\A Programming\C++\openGL\better mario bros\super mario bros\super mario bros\main.cpp(183,16): warning C4244: '-=': conversion from 'double' to 'float', possible loss of data
+  super mario bros.vcxproj -> C:\A Programming\C++\openGL\better mario bros\super mario bros\Debug\super mario bros.exe
