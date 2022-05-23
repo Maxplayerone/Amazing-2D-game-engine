@@ -24,8 +24,13 @@ public:
     Shader(const std::string& filepath);
     ~Shader();
 
+    //binds the shader
     void UseProgram();
+    //unbinds the shader
     void UnuseProgram();
-
+    
+    //sets four float uniform
     void SetUniformMat4f(const std::string& uniformName, const glm::mat4 matrix);
+    //sets one int uniform
+    void SetUniform1i(const std::string& name, int value);
 };

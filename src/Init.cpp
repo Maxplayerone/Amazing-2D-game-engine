@@ -31,6 +31,7 @@
 //shaders
 #include"Shadering/Shader.h"
 #include"Shadering/Renderer.h"
+#include"Shadering/Texture.h"
 
 #define WIDTH 640
 #define HEIGHT 480
@@ -53,12 +54,12 @@ int main(void)
     auto startTime = std::chrono::high_resolution_clock::now();
     std::chrono::steady_clock::time_point endTime;
 
-    /*
     float vertices[] = {
-             -0.5f, -0.5f, 1.0f, 0.0f, 0.0f,// bottom-left
-              0.5f, -0.5f, 1.0f, 0.0f, 0.0f,// bottom-right
-              0.5f,  0.5f, 0.0f, 0.0f, 1.0f,// top-right
-             -0.5f,  0.5f, 0.0f, 0.0f, 1.0f// top-left
+               //position        color       texture
+             -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,// bottom-left
+              0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,// bottom-right
+              0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,// top-right
+             -0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f// top-left
     };
 
     unsigned int indices[] = {
@@ -74,123 +75,39 @@ int main(void)
     VertexBufferLayout vertexBufferLayout;
     vertexBufferLayout.AddFloat(2); //position vertex
     vertexBufferLayout.AddFloat(3); //color vertex
+    vertexBufferLayout.AddFloat(2); //texture vertex
     vertexArray.AddVertexBuffer(vertexBuffer, vertexBufferLayout);
 
     unsigned int indeciesCount = 6;
     IndexBuffer indexBuffer(indeciesCount, indices);
-    */
+    
     Shader shaderProgram("Assets/Shaders/Shader.shader");
     Renderer rend;
 
-    GLCall(glEnable(GL_DEPTH_TEST));
-    float verticesCube[] = {
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-     0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-    -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-    -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-     0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-     0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-     0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-     0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-    -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-    -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-     0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-     0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-    -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-    -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-    };
-    
-    unsigned int vertexBuffer;
-    glGenBuffers(1, &vertexBuffer);
-    glBindBuffer(GL_ARRAY_BUFFER, vertexBuffer);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(verticesCube), verticesCube, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
-    glEnableVertexAttribArray(0);
-
     glm::mat4 modelMat = glm::mat4(1.0f); //identity matrix
-    modelMat = glm::rotate(modelMat, glm::radians(-55.0f), glm::vec3(0.5f, 1.0f, 0.0f));
+    modelMat = glm::rotate(modelMat, glm::radians(-55.0f), glm::vec3(0.0f, 0.0f, 1.0f));
     modelMat = glm::scale(modelMat, glm::vec3(0.5f, 0.5f, 0.5f));
 
-    //glm::mat4 viewMat = glm::mat4(1.0f);
-    //viewMat = glm::translate(viewMat, glm::vec3(0.0f, 0.0f, -3.0f)); //the camera moves to the back
+    glm::mat4 viewMat = glm::mat4(1.0f);
+
+    glm::mat4 projMat = glm::mat4(1.0f);
+    projMat = glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f, -1.0f, 1.0f);
 
     shaderProgram.SetUniformMat4f("model", modelMat);
-    //shaderProgram.SetUniformMat4f("view", viewMat); 
+    shaderProgram.SetUniformMat4f("view", viewMat); 
+    shaderProgram.SetUniformMat4f("projection", projMat);
 
-    //delta time is an amount of time that it takes to finish a frame in a second
-    //so if the game runs at 60 frames then it takes 0.016 seconds to run a frame (delta time)
-    //and if the game runs at 30 frames delta is 0.032
-    //if you multiply both of the equasions the result is the game
-    //that's how deltaTime work
+    Texture texture("Assets/Images/trollface.png");
+    texture.Bind();
+    shaderProgram.SetUniform1i("fTexture", 0);
+
     std::chrono::duration<float> deltaTime;
 
     float r = 0.0f;
     while (!glfwWindowShouldClose(window)) {
-        GLCall(glClear(GL_DEPTH_BUFFER_BIT));
+
         rend.ChangeBGColor(0.0f, 0.0f, 0.0f, 0.0f);
-        //rend.Draw(vertexArray, indexBuffer, shaderProgram);
-
-        //movement
-        float cameraMoveSpeed = 5.0f * deltaTime.count();
-        if (KeyHandleler::Get().IsKeyPressed(GLFW_KEY_W)) {
-            cameraPos += cameraMoveSpeed * cameraFront;
-        }
-        if (KeyHandleler::Get().IsKeyPressed(GLFW_KEY_S)) {
-            cameraPos -= cameraMoveSpeed * cameraFront;
-        }
-        if (KeyHandleler::Get().IsKeyPressed(GLFW_KEY_A)) {
-            cameraPos -= glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraMoveSpeed;
-        }
-        if (KeyHandleler::Get().IsKeyPressed(GLFW_KEY_D)) {
-            cameraPos += glm::normalize(glm::cross(cameraFront, cameraUp)) * cameraMoveSpeed;
-        }
-        glm::mat4 viewMat = glm::mat4(1.0f);
-        viewMat = glm::lookAt(cameraPos, (cameraPos + cameraFront), cameraUp);
-        shaderProgram.SetUniformMat4f("view", viewMat);
-
-        //zooming
-        glm::mat4 projMat = glm::mat4(1.0f);
-        double scrollValue = 0.0f;
-        MouseHandleler::Get().ReturnScrollInput((double*)0, &scrollValue);
-
-        fov -= scrollValue;
-        if (fov >= 45.0f)
-            fov = 45.0f;
-        else if (fov <= 1.0f)
-            fov = 1.0f;
-
-        projMat = glm::perspective(glm::radians(fov), (float)WIDTH / (float)HEIGHT, 1.0f, 100.0f);
-        shaderProgram.SetUniformMat4f("projection", projMat);
-
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        rend.Draw(vertexArray, indexBuffer, shaderProgram);
 
         if (MouseHandleler::Get().IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT))
            // ChangeScene(0);
