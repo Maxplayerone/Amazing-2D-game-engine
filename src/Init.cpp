@@ -33,6 +33,11 @@
 #include"Shadering/Renderer.h"
 #include"Shadering/Texture.h"
 
+#include"ECS/SpriteRenderer.h"
+#include"ECS/Transform.h"
+#include"ECS/Audio.h"  
+#include"ECS/GameObject.h"
+
 #define WIDTH 640
 #define HEIGHT 480
 
@@ -40,12 +45,6 @@ GLFWwindow* Init(void);
 void Shutdown(void);
 void ChangeScene(int);
 Scene::Scene* currentScene;
-
-glm::vec3 cameraPos = glm::vec3(0.0f, 0.0f, 3.0f);
-glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
-glm::vec3 cameraUp = glm::vec3(0.0f, 1.0f, 0.0f);
-
-float fov = 45.0f;
 
 int main(void)
 {
@@ -103,11 +102,28 @@ int main(void)
 
     std::chrono::duration<float> deltaTime;
 
+    
+    SpriteRenderer* spriteRend = new SpriteRenderer("SpriteRend");
+    Transform* transform = new Transform("Transform");
+    Audio* audio = new Audio("Audio");
+
+    GameObject Bjorne;
+
+    Bjorne.AddComponent(spriteRend);
+    Bjorne.AddComponent(audio);
+    Bjorne.AddComponent(transform);
+
+    spriteRend->value = 192;
+
+    SpriteRenderer* newSr = Bjorne.RemoveComponent<SpriteRenderer>();
+    std::cout << newSr->value << std::endl;
+
     float r = 0.0f;
+    /*
     while (!glfwWindowShouldClose(window)) {
 
-        rend.ChangeBGColor(0.0f, 0.0f, 0.0f, 0.0f);
-        rend.Draw(vertexArray, indexBuffer, shaderProgram);
+       rend.ChangeBGColor(0.0f, 0.0f, 0.0f, 0.0f);
+       rend.Draw(vertexArray, indexBuffer, shaderProgram);
 
         if (MouseHandleler::Get().IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT))
            // ChangeScene(0);
@@ -125,7 +141,7 @@ int main(void)
         deltaTime = endTime - startTime;
         startTime = endTime;
     }
-
+    */
     //this triggers an error for some reason
     //Shutdown();
     return 0;
