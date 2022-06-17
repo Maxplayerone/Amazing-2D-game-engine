@@ -1,7 +1,8 @@
 #include"MouseHandleler.h"
 #include<iostream>
 
-MouseHandleler::MouseHandleler() {
+MouseHandleler::MouseHandleler()
+	: xPos(0), yPos(0), xOffset(0), yOffset(0) {
 	for (int i = 0; i < ARRAY_LEN; i++)
 		mouseButtons[i] = false;
 }
@@ -29,4 +30,8 @@ void MouseHandleler::ReturnScrollInput(double* x, double* y) {
 		*x = MouseHandleler::Get().xOffset;
 	if (y != 0)
 		*y = MouseHandleler::Get().yOffset;
+}
+
+bool MouseHandleler::IsScrolling() {
+	return MouseHandleler::Get().xOffset != 0 || MouseHandleler::Get().yOffset != 0 ? true : false;
 }

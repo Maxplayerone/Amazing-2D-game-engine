@@ -20,9 +20,15 @@ private:
 	}
 
 public:
+	std::string m_name;
+
+	GameObject(std::string name) {
+		m_name = name;
+	}
+
 	//adds a component to the game object
 	template<typename T>
-	int AddComponent(T& component) {
+	int AddComponent(T* component) {
 		if (!Instanceof<Component>(component)) {
 			std::cout << "You need to pass a class with sub class component" << std::endl;
 			return -1;
@@ -33,10 +39,9 @@ public:
 		}
 
 		m_components.push_back(component);
-		std::cout << "Vector size is now " << m_components.size() << std::endl;
+		//std::cout << "Vector size is now " << m_components.size() << std::endl;
 		return 0;
 	}
-
 
 	//returns a component from the game object
 	template<typename ComponentType>

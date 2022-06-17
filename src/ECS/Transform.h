@@ -4,17 +4,11 @@
 
 class Transform : public Component {
 public:
-	Transform(std::string name)
-		: m_name(name)
-	{}
+	float x;
+	float y;
 
-	std::string m_name;
-
-	void Start() override {
-		std::cout << "Creating transform object" << std::endl;
-	}
-
-	void Update(float deltaTime) override {
-		std::cout << "Updating transform object" << std::endl;
-	}
+	Transform(float posX, float posY) {
+		x = posX;
+		y = posY;
+ 	}
 };

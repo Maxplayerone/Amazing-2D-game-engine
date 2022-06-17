@@ -5,9 +5,9 @@
 
 void KeyCallBack(GLFWwindow* window, int key, int scancode, int action, int mods) {
     if (action == GLFW_PRESS)
-        KeyHandleler::Get().keys[key] = true;
+        KeyHandleler::Get().m_keys[key] = true;
     else if (action == GLFW_RELEASE)
-        KeyHandleler::Get().keys[key] = false;
+        KeyHandleler::Get().m_keys[key] = false;
 }
 
 void MouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {

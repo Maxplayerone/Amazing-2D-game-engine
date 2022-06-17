@@ -3,7 +3,9 @@
 #include<fstream>
 #include<sstream>
 #include<string>
+
 #include"../Utils/ErrorHandling.h"
+
 #include"glm/glm.hpp"
 
 struct ShaderSources {
@@ -28,9 +30,13 @@ public:
     void UseProgram();
     //unbinds the shader
     void UnuseProgram();
+
+    unsigned int GetID() const { return m_ProgramID; }
     
     //sets four float uniform
     void SetUniformMat4f(const std::string& uniformName, const glm::mat4 matrix);
     //sets one int uniform
     void SetUniform1i(const std::string& name, int value);
+
+    void SetUniform1iv(const std::string& name);
 };

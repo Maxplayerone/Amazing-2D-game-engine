@@ -6,15 +6,19 @@ class KeyHandleler {
 private:
 	KeyHandleler();
 public:
+	bool* m_keys = new bool[ARRAY_LEN];
+	
 	KeyHandleler(const KeyHandleler&) = delete;
-	~KeyHandleler() { delete[] keys; }
+	~KeyHandleler() { delete[] m_keys; }
 
 	static KeyHandleler& Get() {
 		static KeyHandleler instance;
 		return instance;
 	}
-	bool* keys = new bool[ARRAY_LEN];
 
+	//returns ONCE if the key is pressed 
 	bool IsKeyPressed(int key);
+	//returns true for as long as the key is pressed
+	bool IsKeyHeld(int key);
 	int Length() { return ARRAY_LEN; }
 };

@@ -5,8 +5,10 @@ class IndexBuffer {
 private:
 	unsigned int m_BufferID;
 	unsigned int m_indiciesCount;
+
+	void CreateIndexBuffer(const void* indiciesPointer);
 public:
-	IndexBuffer(unsigned int indiciesCount, const void* indiciesPointer);
+	IndexBuffer(unsigned int indeciesCount);
 	~IndexBuffer();
 	void Bind();
 	void Unbind();

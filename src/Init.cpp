@@ -37,6 +37,7 @@
 #include"ECS/Transform.h"
 #include"ECS/Audio.h"  
 #include"ECS/GameObject.h"
+#include"ECS/SpriteSheet.h"
 
 #define WIDTH 640
 #define HEIGHT 480
@@ -53,85 +54,83 @@ int main(void)
     auto startTime = std::chrono::high_resolution_clock::now();
     std::chrono::steady_clock::time_point endTime;
 
-    float vertices[] = {
-               //position        color       texture
-             -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,// bottom-left
-              0.5f, -0.5f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,// bottom-right
-              0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,// top-right
-             -0.5f,  0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f// top-left
-    };
+    Renderer* rend = new Renderer();
+    Shader shaderProgram("Assets/Shaders/Shader.shader");    
 
-    unsigned int indices[] = {
-    //bottom-left, bottom-right, top-right
-     //top-right, top-left, bottom-left
-      0, 1, 2,
-      2, 3, 0
-    };
-
-    VertexArray vertexArray;
-    VertexBuffer vertexBuffer(sizeof(vertices), vertices);
-
-    VertexBufferLayout vertexBufferLayout;
-    vertexBufferLayout.AddFloat(2); //position vertex
-    vertexBufferLayout.AddFloat(3); //color vertex
-    vertexBufferLayout.AddFloat(2); //texture vertex
-    vertexArray.AddVertexBuffer(vertexBuffer, vertexBufferLayout);
-
-    unsigned int indeciesCount = 6;
-    IndexBuffer indexBuffer(indeciesCount, indices);
-    
-    Shader shaderProgram("Assets/Shaders/Shader.shader");
-    Renderer rend;
-
+    //camera and stuff
     glm::mat4 modelMat = glm::mat4(1.0f); //identity matrix
-    modelMat = glm::rotate(modelMat, glm::radians(-55.0f), glm::vec3(0.0f, 0.0f, 1.0f));
-    modelMat = glm::scale(modelMat, glm::vec3(0.5f, 0.5f, 0.5f));
+    modelMat = glm::rotate(modelMat, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+    modelMat = glm::scale(modelMat, glm::vec3(0.8f, 0.8f, 0.8f));
 
     glm::mat4 viewMat = glm::mat4(1.0f);
 
     glm::mat4 projMat = glm::mat4(1.0f);
-    projMat = glm::ortho(-2.0f, 2.0f, -2.0f, 2.0f, -1.0f, 1.0f);
+    projMat = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, -1.0f, 1.0f);
 
-    shaderProgram.SetUniformMat4f("model", modelMat);
-    shaderProgram.SetUniformMat4f("view", viewMat); 
-    shaderProgram.SetUniformMat4f("projection", projMat);
+   shaderProgram.SetUniformMat4f("model", modelMat);
+   shaderProgram.SetUniformMat4f("view", viewMat); 
+   shaderProgram.SetUniformMat4f("projection", projMat);
+    
+    //textures (to be abstracted)
 
-    Texture texture("Assets/Images/trollface.png");
-    texture.Bind();
-    shaderProgram.SetUniform1i("fTexture", 0);
+    Texture trollTexture("Assets/Images/trollface.png", 1);
+    Texture amogusTexture("Assets/Images/amogus.jpg", 2);
+    Texture spriteSheetTex("Assets/Images/spritesheet.png", 3);
+    std::cout << "Dimensions of spriteSheetTex (the whole spriteSheet)" << std::endl;
+    std::cout << "Width " << spriteSheetTex.GetWidth() << " height " << spriteSheetTex.GetHeight() << std::endl << std::endl;
+
+    //SpriteSheet* spriteSheet = new SpriteSheet(&spriteSheetTex, 16, 16, 26, 0);
+    SpriteSheet* spriteSheet = new SpriteSheet(&spriteSheetTex, 16, 16, 26, 0);
+
+    Sprite* testSprite = spriteSheet->GetSprite(9);
+
+    shaderProgram.SetUniform1iv("u_Textures");
+
+    GameObject* trollface = new GameObject("trollface");
+    trollface->AddComponent(new SpriteRenderer(new Sprite(&spriteSheetTex, testSprite->GetTexCoords())));
+    trollface->AddComponent(new Transform(-1.0f, -1.0f));
+    
+    /*
+    GameObject* amogus = new GameObject("Amogus");
+    amogus->AddComponent(new SpriteRenderer(1));
+    amogus->AddComponent(new Transform(1.0f, -1.0f));
+    */
 
     std::chrono::duration<float> deltaTime;
 
-    
-    SpriteRenderer* spriteRend = new SpriteRenderer("SpriteRend");
-    Transform* transform = new Transform("Transform");
-    Audio* audio = new Audio("Audio");
-
-    GameObject Bjorne;
-
-    Bjorne.AddComponent(spriteRend);
-    Bjorne.AddComponent(audio);
-    Bjorne.AddComponent(transform);
-
-    spriteRend->value = 192;
-
-    SpriteRenderer* newSr = Bjorne.RemoveComponent<SpriteRenderer>();
-    std::cout << newSr->value << std::endl;
-
     float r = 0.0f;
-    /*
-    while (!glfwWindowShouldClose(window)) {
 
-       rend.ChangeBGColor(0.0f, 0.0f, 0.0f, 0.0f);
-       rend.Draw(vertexArray, indexBuffer, shaderProgram);
+    float modelScale = 1.0f;
+    float modelIncVal = 0.1f;
+    
+    while (!glfwWindowShouldClose(window)) {     
 
-        if (MouseHandleler::Get().IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT))
-           // ChangeScene(0);
-        if (MouseHandleler::Get().IsMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT))
-            //ChangeScene(1);
+    rend->ChangeBGColor(r, 0.74f, 0.91f, 0.0f);
+    
+    rend->DrawSingle(trollface, shaderProgram);
+    //rend->DrawSingle(amogus, shaderProgram);
+    //rend->DrawSingle(coloredCube, shaderProgram);
+    //rend->DrawSingle(spriteSheetObj, shaderProgram);
+    
+
+    if (MouseHandleler::Get().IsMouseButtonPressed(GLFW_MOUSE_BUTTON_LEFT))
+        if(r < 1.0f)
+            r += 0.05f;
+    if (MouseHandleler::Get().IsMouseButtonPressed(GLFW_MOUSE_BUTTON_RIGHT))
+        if(r > 0.0f)
+            r -= 0.05f;
 
         if (currentScene != nullptr)
             currentScene->OnUpdate(deltaTime.count(), r);
+          
+        //zoom
+            if (KeyHandleler::Get().IsKeyHeld(GLFW_KEY_Q))
+                modelScale += modelIncVal;
+            if (KeyHandleler::Get().IsKeyHeld(GLFW_KEY_W))
+                modelScale -= modelIncVal;
+
+           projMat = glm::ortho(-modelScale, modelScale, -modelScale, modelScale, -1.0f, 1.0f);
+           shaderProgram.SetUniformMat4f("projection", projMat);
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -141,9 +140,10 @@ int main(void)
         deltaTime = endTime - startTime;
         startTime = endTime;
     }
-    */
+    
     //this triggers an error for some reason
     //Shutdown();
+    
     return 0;
 }
 

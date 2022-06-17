@@ -31,6 +31,7 @@ public:
 	void GetScrollInput(double x, double y);
 
 	void ReturnScrollInput(double* x, double* y);
+	bool IsScrolling();
 
 	//gets x and y position of the mouse in relation to the screen
 	void GetMousePosAbsolute(double x, double y);
