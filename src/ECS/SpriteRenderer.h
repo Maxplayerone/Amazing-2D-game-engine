@@ -19,7 +19,7 @@ public:
 		b = _b;
 		a = _a;
 
-		m_Sprite = new Sprite(nullptr);
+		m_Sprite = GetDummySprite();
 		m_TextureIndex = 0;
 	}
 
@@ -31,8 +31,6 @@ public:
 
 		m_Sprite = sprite;
 		m_TextureIndex = sprite->GetTexSlot();
-
-
 	}
 
 	SpriteRenderer(unsigned int texIndex) {
@@ -41,9 +39,9 @@ public:
 		g = 1.0f;
 		a = 1.0f;
 
-		//we don't actually need m_sprite but I might need it for debugging in the future so think of a better thing than this
-		m_Sprite = nullptr;
+
 		m_TextureIndex = texIndex;
+		m_Sprite = GetDummySprite();
 	}
 
 	unsigned int GetTexIndex() const { return m_TextureIndex; }
@@ -62,4 +60,14 @@ public:
 private:
 	unsigned int m_TextureIndex;
 	Sprite* m_Sprite;
+
+	Sprite* GetDummySprite() {
+		float texCoords[8] = {
+			0.0f, 0.0f,
+			1.0f, 0.0f,
+			0.0f, 1.0f,
+			1.0f, 1.0f
+		};
+		 return new Sprite(texCoords);
+	}
 };

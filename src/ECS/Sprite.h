@@ -31,6 +31,13 @@ public:
 		}
 	}
 
+	Sprite(float texCoords[8]) {
+		m_texture = nullptr;
+		for (int i = 0; i < 8; i++) {
+			m_TexCoords[i] = texCoords[i];
+		}
+	}
+
 	float* GetTexCoords() { return m_TexCoords; }
 	Texture* GetTexture() const { return m_texture; }
 	unsigned int GetTexSlot() const { return m_texture->GetSlot(); }

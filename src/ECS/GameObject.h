@@ -19,11 +19,13 @@ private:
 		return dynamic_cast<const Base*>(ptr) != nullptr;
 	}
 
+	unsigned int m_ID;
 public:
-	std::string m_name;
 
-	GameObject(std::string name) {
-		m_name = name;
+	GameObject(unsigned int id)
+		: audio(nullptr), spriteRend(nullptr), transform(nullptr)
+	{
+		m_ID = id;
 	}
 
 	//adds a component to the game object
@@ -67,4 +69,6 @@ public:
 			}
 		}
 	}
+
+	unsigned int GetID() const { return m_ID; }
 };

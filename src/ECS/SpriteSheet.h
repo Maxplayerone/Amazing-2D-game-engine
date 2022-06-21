@@ -33,8 +33,6 @@ public:
 			};
 
 			Sprite* sprite = new Sprite(m_texture, texCoords);
-			sprite->m_name = "Bjorne";
-			std::cout << sprite->m_name << std::endl;
 			m_sprites.push_back(sprite);
 
 			currentX += (spriteWidth + spacing);
