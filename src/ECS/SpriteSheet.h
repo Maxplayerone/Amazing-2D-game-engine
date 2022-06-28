@@ -4,13 +4,13 @@
 #include"Sprite.h"
 
 #include<vector>
-#include<iostream>
 
 class SpriteSheet {
 private:
 	Texture* m_texture;
 	std::vector<Sprite*> m_sprites;
 public:
+
 	SpriteSheet(Texture* texture, unsigned int spriteHeight, unsigned int spriteWidth, unsigned int numOfSprites, unsigned int spacing) {
 		m_texture = texture;
 

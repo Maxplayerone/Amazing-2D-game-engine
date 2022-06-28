@@ -16,6 +16,7 @@ struct ShaderSources {
 class Shader {
 private:
     unsigned int m_ProgramID;
+    std::string m_filepath;
 
     ShaderSources ParseShader(const std::string& filepath);
     unsigned int CompileShader(unsigned int type, const std::string& source);
@@ -23,7 +24,7 @@ private:
 
     int GetUniformLocation(const std::string& name);
 public:
-    Shader(const std::string& filepath);
+    Shader(std::string filepath);
     ~Shader();
 
     //binds the shader

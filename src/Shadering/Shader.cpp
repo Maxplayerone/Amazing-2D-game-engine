@@ -1,9 +1,9 @@
 #include"Shader.h"
 
-Shader::Shader(const std::string& filepath)
-    : m_ProgramID(0)
+Shader::Shader(std::string filepath)
+    : m_ProgramID(0), m_filepath(filepath)
 {
-    ShaderSources sources = ParseShader(filepath);
+    ShaderSources sources = ParseShader(m_filepath);
     m_ProgramID = CreateProgram(sources.vertexShader, sources.fragmentShader);
 
     GLCall(glUseProgram(m_ProgramID));
@@ -14,6 +14,7 @@ Shader::~Shader() {
 }
 
 void Shader::UseProgram() {
+    //std::cout << "Program id " << m_ProgramID << std::endl;
     GLCall(glUseProgram(m_ProgramID));
 }
 
@@ -38,7 +39,7 @@ void Shader::SetUniform1i(const std::string& name, int value) {
 }
 
 void Shader::SetUniform1iv(const std::string& name) {
-    auto location = glGetUniformLocation(m_ProgramID, name.c_str());
+    int location = GetUniformLocation(name.c_str());
     int sampler[8] = { 0, 1, 2, 3, 4, 5, 6, 7 };
     glUniform1iv(location, 8, sampler);
 }

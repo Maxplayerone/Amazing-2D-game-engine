@@ -1,8 +1,7 @@
 #pragma once
 #include"../Shadering/Texture.h"
-#include"Component.h"
 
-class Sprite : public Component {
+class Sprite {
 private:
 	Texture* m_texture;
 	float m_TexCoords[8];
@@ -39,6 +38,6 @@ public:
 	}
 
 	float* GetTexCoords() { return m_TexCoords; }
-	Texture* GetTexture() const { return m_texture; }
+	Texture* GetTexture() const { if(m_texture != nullptr) return m_texture; }
 	unsigned int GetTexSlot() const { return m_texture->GetSlot(); }
 };

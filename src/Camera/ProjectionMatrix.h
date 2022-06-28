@@ -21,7 +21,7 @@ public:
         rightBorder = horizontal;
         leftBorder = rightBorder * -1;
         topBorder = vertical;
-        leftBorder = topBorder * -1;
+        bottomBorder = topBorder * -1;
 
         m_matrix = glm::ortho(leftBorder, rightBorder, bottomBorder, topBorder, -1.0f, 1.0f);
     }
@@ -30,7 +30,7 @@ public:
         rightBorder = right;
         leftBorder = left;
         topBorder = top;
-        leftBorder = bottom;
+        bottomBorder = bottom;
 
         m_matrix = glm::ortho(leftBorder, rightBorder, bottomBorder, topBorder, -1.0f, 1.0f);
     }
@@ -39,7 +39,7 @@ public:
         rightBorder = right;
         leftBorder = left;
         topBorder = vertical;
-        leftBorder = topBorder * -1;
+        bottomBorder = topBorder * -1;
 
         m_matrix = glm::ortho(leftBorder, rightBorder, bottomBorder, topBorder, -1.0f, 1.0f);
 

@@ -1,17 +1,30 @@
 #pragma once
 #include"Component.h"
 #include"Sprite.h"
-
-#include<iostream>
-
-#include"../Shadering/Texture.h"
+#include"GameObject.h"
 
 class SpriteRenderer : public Component {
-public:
+private:
+	unsigned int m_TextureIndex;
+	Sprite* m_Sprite;
+
 	float r;
 	float b;
 	float g;
 	float a;
+
+	bool dirty = false;
+
+	Sprite* GetDummySprite() {
+		float texCoords[8] = {
+			0.0f, 0.0f,
+			1.0f, 0.0f,
+			0.0f, 1.0f,
+			1.0f, 1.0f
+		};
+		return new Sprite(texCoords);
+	}
+public:
 
 	SpriteRenderer(float _r, float _g, float _b, float _a){
 		r = _r;
@@ -47,27 +60,45 @@ public:
 	unsigned int GetTexIndex() const { return m_TextureIndex; }
 	float* GetTexCoords() const { return m_Sprite->GetTexCoords(); }
 	Texture* GetTexture() const { return m_Sprite->GetTexture(); }
+	float GetR() const { return r; }
+	float GetG() const { return g; }
+	float GetB() const { return b; }
+	float GetA() const { return a; }
+
+	void SetR(float value) {
+		r = value;
+		dirty = true;
+	}
+
+	void SetG(float value) {
+		g = value;
+		dirty = true;
+	}
+
+	void SetB(float value) {
+		b = value;
+		dirty = true;
+	}
+
+	void SetA(float value) {
+		a = value;
+		dirty = true;
+	}
+
+	void SetSprite(Sprite* _sprite) {
+		m_Sprite = _sprite;
+		dirty = true;
+	}
+
+	void Clean() { dirty = false; }
+
+	bool IsDirty() { return dirty; }
 
 
-	void Start() override {
-		std::cout << "Creating sprite renderer" << std::endl;
+	void Start() {
+		dirty = false;
 	}
 
 	void Update(float deltaTime) override {
-		std::cout << "Updating sprite renderer" << std::endl;
-	}
-
-private:
-	unsigned int m_TextureIndex;
-	Sprite* m_Sprite;
-
-	Sprite* GetDummySprite() {
-		float texCoords[8] = {
-			0.0f, 0.0f,
-			1.0f, 0.0f,
-			0.0f, 1.0f,
-			1.0f, 1.0f
-		};
-		 return new Sprite(texCoords);
 	}
 };

@@ -1,17 +1,10 @@
 #pragma once
-#include"Audio.h"
-#include"SpriteRenderer.h"
-#include"Transform.h"
-
 #include<vector>
+#include"Component.h"
+#include"../Utils/AssetsPool.h"
 
 class GameObject {
 private:
-	Audio* audio;
-	SpriteRenderer* spriteRend;
-	Transform* transform;
-	
-	const static unsigned int componentTypes = 3;
 	std::vector<Component*> m_components;
 
 	template<typename Base, typename T>
@@ -22,12 +15,9 @@ private:
 	unsigned int m_ID;
 public:
 
-	GameObject(unsigned int id)
-		: audio(nullptr), spriteRend(nullptr), transform(nullptr)
-	{
-		m_ID = id;
+	GameObject() {
+		m_ID = AssetsPool::Get().GetGameObjectID();
 	}
-
 	//adds a component to the game object
 	template<typename T>
 	int AddComponent(T* component) {
@@ -41,7 +31,6 @@ public:
 		}
 
 		m_components.push_back(component);
-		//std::cout << "Vector size is now " << m_components.size() << std::endl;
 		return 0;
 	}
 
@@ -71,4 +60,10 @@ public:
 	}
 
 	unsigned int GetID() const { return m_ID; }
+
+	void Update(float deltaTime) {
+		for (int i = 0; i < m_components.size(); i++) {
+			m_components[i]->Update(deltaTime);
+		}
+	}
 };
