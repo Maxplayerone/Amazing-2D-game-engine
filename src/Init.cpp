@@ -5,6 +5,11 @@
 #include"GL/glew.h"
 #include <GLFW/glfw3.h>
 
+//I am a gui
+#include"yoinked libs/imGui/imgui.h"
+#include"yoinked libs/imGui/imgui_impl_glfw.h"
+#include"yoinked libs/imGui/imgui_impl_opengl3.h"
+
 //input
 #include"InputHandling/InputCallbacks.h"
 #include"InputHandling/KeysHandleler.h"
@@ -25,8 +30,8 @@
 
 #include"Utils/AssetsPool.h"
 
-#define WIDTH 640
-#define HEIGHT 480
+#define WIDTH 960
+#define HEIGHT 720
 
 GLFWwindow* Init(void);
 void Shutdown(void);
@@ -52,34 +57,53 @@ int main(void)
     ViewMatrix* _viewMatrix = new ViewMatrix();
     ProjectionMatrix* _projectionMatrix = new ProjectionMatrix();
     
-    Shader shaderProgram = AssetsPool::Get().GetShader("Assets/shaders/shader.shader");
+    Shader* shaderProgram = AssetsPool::Get().GetShader("Assets/shaders/shader.shader");
 
-    Camera* camera = new Camera(shaderProgram);
-    camera->Push(Camera::MatrixType::TYPE_MODEL, _modelMatrix->GetModelMatrix(), shaderProgram);
-    camera->Push(Camera::MatrixType::TYPE_VIEW, _viewMatrix->GetViewMatrix(), shaderProgram);
-    camera->Push(Camera::MatrixType::TYPE_PROJECTION, _projectionMatrix->GetProjectionMatrix(), shaderProgram);
+    Camera* camera = new Camera(*shaderProgram);
+    camera->Push(Camera::MatrixType::TYPE_MODEL, _modelMatrix->GetModelMatrix(), *shaderProgram);
+    camera->Push(Camera::MatrixType::TYPE_VIEW, _viewMatrix->GetViewMatrix(), *shaderProgram);
+    camera->Push(Camera::MatrixType::TYPE_PROJECTION, _projectionMatrix->GetProjectionMatrix(), *shaderProgram);
+
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO& io = ImGui::GetIO(); (void)io;
+    ImGui::StyleColorsDark();
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init("#version 330");
 
     ChangeScene(1);
-    float scaleValue = 1.0f;
+    float scaleValue = 3.5f;
+    float nothing = 0.0f;
+
     while (!glfwWindowShouldClose(window)) {
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
 
         if (KeyHandleler::Get().IsKeyPressed(GLFW_KEY_U)) ChangeScene(1);
         if (KeyHandleler::Get().IsKeyPressed(GLFW_KEY_I)) ChangeScene(0);
 
-        if (currentScene != nullptr)
-          currentScene->OnUpdate(deltaTime.count());
-
-        if (KeyHandleler::Get().IsKeyHeld(GLFW_KEY_Q)) {
-            scaleValue += 0.05f;
-            _projectionMatrix = new ProjectionMatrix(scaleValue);
-            camera->Push(Camera::MatrixType::TYPE_PROJECTION, _projectionMatrix->GetProjectionMatrix(), shaderProgram);
-        }
-        if (KeyHandleler::Get().IsKeyHeld(GLFW_KEY_W)) {
-            scaleValue -= 0.05f;
-            _projectionMatrix = new ProjectionMatrix(scaleValue);
-            camera->Push(Camera::MatrixType::TYPE_PROJECTION, _projectionMatrix->GetProjectionMatrix(), shaderProgram);
+        if (currentScene != nullptr) {
+            currentScene->OnUpdate(deltaTime.count());
+            currentScene->ImGui();
         }
 
+        ImGui::Begin("window");
+        ImGui::SliderFloat("Camera zoom", &scaleValue, 0.0f, 5.0f);
+        ImGui::End();
+
+
+        //works just fine
+        /*
+        ImGui::Begin("Another test");
+        ImGui::SliderFloat("Nothing", &nothing, 0.0f, 100.0f);
+        ImGui::End();
+        */
+        _projectionMatrix = new ProjectionMatrix(scaleValue);
+        camera->Push(Camera::MatrixType::TYPE_PROJECTION, _projectionMatrix->GetProjectionMatrix(), *shaderProgram);
+
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
         glfwSwapBuffers(window);
         glfwPollEvents();
 
@@ -134,6 +158,9 @@ GLFWwindow* Init(void) {
 void Shutdown(void) {
     //KeyHandleler::Get().~KeyHandleler();
     //MouseHandleler::Get().~MouseHandleler();
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
     glfwTerminate();
 }
 

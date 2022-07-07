@@ -11,16 +11,18 @@ public:
 	: m_texture(_texture)
 	{
 		float leftX = 0.0f;
-		float rightX = m_texture->GetWidth();
+		float rightX = m_texture->GetWidth();		
 		float topY = m_texture->GetHeight();
 		float bottomY = 0.0f;
 
-		float texCoords[8] = {
-			leftX, bottomY,
-			rightX, bottomY,
-			leftX, topY,
-			rightX, topY
-		};
+		m_TexCoords[0] = leftX;
+		m_TexCoords[1] = bottomY;
+		m_TexCoords[2] = rightX;
+		m_TexCoords[3] = bottomY;
+		m_TexCoords[4] = leftX;
+		m_TexCoords[5] = topY;
+		m_TexCoords[6] = rightX;
+		m_TexCoords[7] = topY;
 	}
 
 	Sprite(Texture* _texture, float texCoords[8]) {

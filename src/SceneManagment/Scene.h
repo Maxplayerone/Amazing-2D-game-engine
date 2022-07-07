@@ -26,4 +26,6 @@ public:
 	virtual void OnUpdate(float deltaTime) {};
 
 	virtual void AddGameObjectToScene(GameObject* go) {};
+
+	virtual void ImGui() {};
 };

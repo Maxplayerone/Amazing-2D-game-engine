@@ -33,7 +33,7 @@ public:
     void UnuseProgram();
 
     unsigned int GetID() const { return m_ProgramID; }
-    
+
     //sets four float uniform
     void SetUniformMat4f(const std::string& uniformName, const glm::mat4 matrix);
     //sets one int uniform

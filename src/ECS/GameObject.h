@@ -66,4 +66,10 @@ public:
 			m_components[i]->Update(deltaTime);
 		}
 	}
+
+	void ImGui() {
+		for (auto component : m_components) {
+			component->ImGui();
+		}
+	}
 };

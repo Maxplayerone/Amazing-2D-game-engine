@@ -25,13 +25,13 @@ void BatchRenderer::Render() {
         rebufferData = false;
     }
 
-    Shader shader = AssetsPool::Get().GetShader("Assets/shaders/shader.shader");
-    shader.UseProgram();
+    Shader* shader = AssetsPool::Get().GetShader("Assets/shaders/shader.shader");
+    shader->UseProgram();
     GLCall(glDrawElements(GL_TRIANGLES, indexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr));
 }
 
 BatchRenderer::BatchRenderer() {
-	vertices = new float[MAX_BATCH_SIZE * VERTICES_DATA_FOR_QUAD];
+	vertices = new float[MAX_BATCH_SIZE * VERTICES_DATA_FOR_QUAD]; //1000 * 32 * 32bytes per float = 64000 bytes
 
 	vertexArray = new VertexArray();
 
@@ -70,8 +70,8 @@ void BatchRenderer::LoadVerticesData(unsigned int gameObjectIndex) {
             break;
         }
 
-        vertices[(0 + (DATA_IN_ONE_VERTEX * i)) + gameObjectOffset] = trans->x + offsetX;
-        vertices[(1 + (DATA_IN_ONE_VERTEX * i)) + gameObjectOffset] = trans->y + offsetY;
+        vertices[(0 + (DATA_IN_ONE_VERTEX * i)) + gameObjectOffset] = trans->GetPos(0) + offsetX;
+        vertices[(1 + (DATA_IN_ONE_VERTEX * i)) + gameObjectOffset] = trans->GetPos(1) + offsetY;
         vertices[(2 + (DATA_IN_ONE_VERTEX * i)) + gameObjectOffset] = rend->GetR();
         vertices[(3 + (DATA_IN_ONE_VERTEX * i)) + gameObjectOffset] = rend->GetG();
         vertices[(4 + (DATA_IN_ONE_VERTEX * i)) + gameObjectOffset] = rend->GetB();

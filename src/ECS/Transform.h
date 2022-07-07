@@ -4,14 +4,13 @@
 class Transform : public Component {
 private:
 	bool dirty;
+	float positions[2];
 public:
-	float x;
-	float y;
 
 	Transform(float posX, float posY) {
 		dirty = false;
-		x = posX;
-		y = posY;
+		positions[0] = posX;
+		positions[1] = posY;
  	}
 
 	void Update(float deltaTime) override {
@@ -19,10 +18,19 @@ public:
 	}
 
 	void SetPosition(float x, float y) {
-		this->x = x;
-		this->y = y;
+		this->positions[0] = x;
+		this->positions[1] = y;
 		dirty = true;
 	}
 
 	bool IsDirty() { return dirty; }
+	float GetPos(unsigned int index) { return positions[index]; }
+
+	void ImGui() override {
+		ImGui::Begin("Transform");
+		ImGui::SliderFloat2("Position", positions, -2.0f, 2.0f);
+		std::cout << "x " << positions[0] << " y " << positions[1] << std::endl;
+		dirty = true;
+		ImGui::End();
+	}
 };

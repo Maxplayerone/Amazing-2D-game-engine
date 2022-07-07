@@ -101,4 +101,15 @@ public:
 
 	void Update(float deltaTime) override {
 	}
+
+	void ImGui() override {
+		float colors[4] = { r, g, b, a };
+		ImGui::Begin("Sprite renderer");
+		ImGui::SliderFloat4("Red", colors, 0.0f, 1.0f);
+		r = colors[0];
+		g = colors[1];
+		b = colors[2];
+		a = colors[3];
+		ImGui::End();
+	}
 };
